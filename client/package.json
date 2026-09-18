@@ -5,23 +5,24 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node -e \"const fs=require('fs'),path=require('path'),b=path.join('node_modules','.bin');if(fs.existsSync(b)){fs.readdirSync(b).forEach(f=>{try{fs.chmodSync(path.join(b,f),0o755)}catch(e){}})}\"",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
     "canvas-confetti": "^1.9.4",
+    "jszip": "^3.10.1",
     "lucide-react": "^0.475.0",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "3.11.174",
-    "jszip": "^3.10.1",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "vite": "^5.4.14"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.17",
-    "vite": "^5.4.14"
+    "tailwindcss": "^3.4.17"
   }
 }
