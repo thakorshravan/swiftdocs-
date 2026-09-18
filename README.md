@@ -73,20 +73,48 @@ Backend runs on [http://localhost:5000](http://localhost:5000).
 
 ## 🌐 100% Free Deployment Guide
 
-### A. Deploy Frontend for Free (Vercel / Cloudflare Pages)
-1. Push your code to a GitHub repository.
-2. Go to **[Vercel.com](https://vercel.com)** or **[Cloudflare Pages](https://pages.cloudflare.com/)**.
-3. Import your repository:
-   - **Root Directory**: `client`
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `dist`
-4. Deploy! Your frontend is live with unlimited bandwidth, custom domain, and SSL.
+### A. Deploy Frontend on Vercel (React + Vite)
 
-### B. Deploy Backend for Free (Hugging Face Spaces / Render)
+SwiftDocs includes pre-configured Vercel configuration files (`client/vercel.json` and fallback root `vercel.json`) with SPA rewrite rules to ensure seamless routing without `404 NOT_FOUND` errors.
+
+#### Option 1: Recommended Setup (Root Directory = `client`)
+1. Push your code to your GitHub repository.
+2. Go to **[Vercel Dashboard](https://vercel.com/new)** and click **Import** on your repository.
+3. Under **Configure Project**:
+   - **Framework Preset**: `Vite`
+   - **Root Directory**: Click **Edit** and choose `client` (or type `client`)
+   - **Build Command**: `npm run build` (or leave default Vite command)
+   - **Output Directory**: `dist` (or leave default)
+   - **Install Command**: `npm install`
+4. *(Optional)* **Environment Variables**:
+   - `VITE_API_URL`: `https://your-flask-backend-url.com/api` (If omitted, SwiftDocs will use its built-in client-side engine in the browser for all conversions!)
+5. Click **Deploy**. Your frontend is live with automatic SSL and CDN caching!
+
+#### 🛠️ How to Fix an Existing Deployment Showing "404 NOT_FOUND"
+If your existing Vercel deployment shows `404 NOT_FOUND`, it means Vercel was deployed from the repository root without targeting the `client/` folder:
+1. In your **Vercel Dashboard**, open your project.
+2. Go to **Settings** > **General**.
+3. Under **Root Directory**, click **Edit**, enter `client`, and click **Save**.
+4. In **Build & Development Settings**, confirm:
+   - Framework Preset: `Vite`
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+5. Go to the **Deployments** tab, click the three dots (`...`) on your latest deployment, and select **Redeploy** (ensure you uncheck "Use existing build cache").
+
+---
+
+### B. Deploy Backend for Free (Hugging Face Spaces / Render / Railway)
+The Python Flask backend in `server/` handles complex server-side conversions (e.g. high-fidelity Microsoft Word & Excel formatting):
+
 1. **Hugging Face Spaces (Recommended - Free 16GB RAM Container)**:
    - Create a new Space with `Docker` or `Gradio/Python` SDK.
-   - Copy `server/` files into the space.
+   - Point to the `server/` directory or copy its files.
 2. **Render.com**:
    - Create a new "Web Service" from GitHub targeting the `server` directory.
-   - Build Command: `pip install -r requirements.txt`
-   - Start Command: `gunicorn -w 4 -b 0.0.0.0:$PORT app:app` or `python app.py`.
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `gunicorn -w 4 -b 0.0.0.0:$PORT app:app`
+3. **Connect Frontend to Backend**:
+   - In your Vercel project, go to **Settings** > **Environment Variables**.
+   - Add `VITE_API_URL` set to `https://<your-backend-service-url>/api`.
+   - Redeploy the frontend.
+
